@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TaskToDo</string>
+    <string name="check_network">Please check Internet connection</string>
 </resources>
