@@ -16,6 +16,10 @@ class RowViewModel(private val repository: DataSource) : ViewModel() {
     private val _onMessageError = MutableLiveData<Any>()
     private val _isEmptyList = MutableLiveData<Boolean>()
 
+    companion object
+    {
+        var titleString: String =""
+    }
 
     fun loadResponse() {
         _isViewLoading.postValue(true)
@@ -28,6 +32,10 @@ class RowViewModel(private val repository: DataSource) : ViewModel() {
                         _isEmptyList.postValue(true)
                     } else {
                         _rows.value = data
+                        if (title != null) {
+                            titleString= title
+                        }
+
                     }
                 }
             }

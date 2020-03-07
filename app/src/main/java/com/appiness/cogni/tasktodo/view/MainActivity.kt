@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.appiness.cogni.tasktodo.R
 import com.appiness.cogni.tasktodo.di.Injection
-import com.appiness.cogni.tasktodo.model.ApiResponse
 import com.appiness.cogni.tasktodo.model.RowResponse
 import com.appiness.cogni.tasktodo.viewmodel.RowViewModel
 import com.ebayk.utils.NetworkUtils
@@ -24,7 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: RecycleAdapter
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var nodata: TextView
-    private lateinit var title:TextView
+    private lateinit var title: TextView
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,9 @@ class MainActivity : AppCompatActivity() {
         swipeRefreshLayout = findViewById(R.id.itemsswipetorefresh) as SwipeRefreshLayout
 
         nodata = findViewById(R.id.no_data)
-        //title=findViewById(R.id.title_page)
+        toolbar = findViewById(R.id.toolbar)
+        title = toolbar.findViewById(R.id.title_page)
+
         adapter = RecycleAdapter(this@MainActivity, viewModel.rows_response.value ?: emptyList())
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -59,14 +62,17 @@ class MainActivity : AppCompatActivity() {
 
     //observers
     private val renderReviews = Observer<List<RowResponse>> {
-         adapter.update(it)
+        adapter.update(it)
     }
 
 
     private val isViewLoadingObserver = Observer<Boolean> {
         val visibility = if (it) View.VISIBLE else View.GONE
-        val visibleViews = if (it) View.GONE else View.VISIBLE
+
         progressBar.visibility = visibility
+        if (!it) {
+            title.text = RowViewModel.titleString
+        }
 
 
     }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.appiness.cogni.tasktodo.R
 import com.appiness.cogni.tasktodo.model.ApiResponse
 import com.appiness.cogni.tasktodo.model.RowResponse
+import com.bumptech.glide.Glide
 
 class RecycleAdapter(private var context: Context, private var responseList: List<RowResponse>) :
     RecyclerView.Adapter<RecycleAdapter.MViewHolder>() {
@@ -33,8 +34,25 @@ class RecycleAdapter(private var context: Context, private var responseList: Lis
         val _row = responseList[position]
         //render
 
-        holder.textViewititle.text = _row.title
-        holder.description.text = _row.description
+        if(_row.title!=null)
+        {
+            holder.description.visibility=View.VISIBLE
+            holder.textViewititle.visibility=View.VISIBLE
+            holder.image.visibility=View.VISIBLE
+            holder.textViewititle.text = _row.title
+            holder.description.text = _row.description
+            Glide.with(context)
+                .load(_row.imageHref)
+                .centerCrop()
+                .placeholder(R.drawable.place_holder)
+                .into(holder.image)
+        }
+        else{
+            holder.description.visibility=View.GONE
+            holder.textViewititle.visibility=View.GONE
+            holder.image.visibility=View.GONE
+        }
+
     }
 
     fun update(data: List<RowResponse>) {
