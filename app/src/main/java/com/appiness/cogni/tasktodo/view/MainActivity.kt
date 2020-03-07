@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var nodata: TextView
     private lateinit var title: TextView
+    lateinit var itemsCells: List<RowResponse?>
     private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setupViewModel()
         initViews()
+
 
     }
 
@@ -58,6 +60,14 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
+            recyclerView.visibility = View.GONE
+            progressBar.visibility = View.GONE
+            viewModel.refresh()
+        }
+
+
     }
 
     //observers
@@ -70,12 +80,16 @@ class MainActivity : AppCompatActivity() {
         val visibility = if (it) View.VISIBLE else View.GONE
 
         progressBar.visibility = visibility
+        if (adapter.itemCount > 0) {
+            recyclerView.visibility = View.VISIBLE
+        }
         if (!it) {
             title.text = RowViewModel.titleString
         }
 
 
     }
+
 
     override fun onResume() {
         super.onResume()
