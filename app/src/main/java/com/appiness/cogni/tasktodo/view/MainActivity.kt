@@ -7,11 +7,13 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.appiness.cogni.tasktodo.R
 import com.appiness.cogni.tasktodo.di.Injection
+import com.appiness.cogni.tasktodo.model.Repositry
 import com.appiness.cogni.tasktodo.model.RowResponse
 import com.appiness.cogni.tasktodo.viewmodel.RowViewModel
 import com.ebayk.utils.NetworkUtils
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             this,
             Injection.provideViewModelFactory()
         ).get(RowViewModel::class.java)
+
         viewModel.rows_response.observe(this, renderReviews)
         viewModel.isViewLoading.observe(this, isViewLoadingObserver)
     }
@@ -78,13 +81,19 @@ class MainActivity : AppCompatActivity() {
 
     private val isViewLoadingObserver = Observer<Boolean> {
         val visibility = if (it) View.VISIBLE else View.GONE
-
         progressBar.visibility = visibility
         if (adapter.itemCount > 0) {
             recyclerView.visibility = View.VISIBLE
         }
         if (!it) {
             title.text = RowViewModel.titleString
+        }
+        if(Repositry.isBadResponse)
+        {
+            swipeRefreshLayout.visibility=View.GONE
+            toolbar.visibility=View.GONE
+            nodata.visibility=View.VISIBLE
+            nodata.text="Bad Url request please check..."
         }
 
 
@@ -94,9 +103,13 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (NetworkUtils.isNetworkConnected(this@MainActivity)) {
+            swipeRefreshLayout.visibility=View.VISIBLE
+            toolbar.visibility=View.VISIBLE
             viewModel.loadResponse()
         } else {
+            swipeRefreshLayout.visibility=View.GONE
             nodata.visibility = View.VISIBLE
+            toolbar.visibility=View.GONE
         }
     }
 }

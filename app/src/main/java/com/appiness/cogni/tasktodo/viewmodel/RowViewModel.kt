@@ -1,5 +1,6 @@
 package com.appiness.cogni.tasktodo.viewmodel
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,8 +19,11 @@ class RowViewModel(private val repository: DataSource) : ViewModel() {
     private val _onMessageError = MutableLiveData<Any>()
     private val _isEmptyList = MutableLiveData<Boolean>()
 
+
+
     companion object {
         var titleString: String = ""
+
     }
 
     fun refresh() {
@@ -47,6 +51,8 @@ class RowViewModel(private val repository: DataSource) : ViewModel() {
             }
 
             override fun onError(error: String?) {
+                Log.i("Error is",error)
+
                 _isViewLoading.postValue(false)
                 _onMessageError.postValue(error)
             }

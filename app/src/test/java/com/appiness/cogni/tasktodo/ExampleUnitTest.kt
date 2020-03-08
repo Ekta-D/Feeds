@@ -1,7 +1,7 @@
 package com.appiness.cogni.tasktodo
 
 import org.junit.Test
-
+import androidx.test.runner.AndroidJUnit4
 import org.junit.Assert.*
 
 /**
