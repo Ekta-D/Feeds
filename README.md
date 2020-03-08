@@ -21,7 +21,7 @@ This project basically shows the feeds from given Url.
 * Added UI test to check data exist in list
 * If no data in list check the message text.
 
-##Tools
+## Tools
 
 * Language: Kotlin
 * Architecture: MVVM +Live Data
